@@ -1,0 +1,232 @@
+:root {
+    --bg-color: #f5f5f5;
+    --text-color: #333;
+    --board-bg: #e6b87d; /* Wood-like color */
+    --board-line: #5c3a21; /* Dark wood for lines */
+    --black-piece: #222;
+    --white-piece: #fdfdfd;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    max-width: 700px;
+    width: 100%;
+    background: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+    text-align: center;
+}
+
+header h1 {
+    font-size: 2.2rem;
+    margin-bottom: 8px;
+    color: #2c3e50;
+    letter-spacing: 2px;
+}
+
+.rules {
+    font-size: 0.95rem;
+    color: #7f8c8d;
+    margin-bottom: 25px;
+}
+
+.status-panel {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 0 10px;
+}
+
+#status {
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.player-black {
+    color: var(--black-piece);
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+}
+
+.player-white {
+    color: #555;
+    background: #f0f0f0;
+    padding: 4px 12px;
+    border-radius: 20px;
+    border: 1px solid #ccc;
+    box-shadow: inset 1px 1px 3px rgba(255,255,255,0.8);
+}
+
+.btn {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    font-size: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 6px rgba(52, 152, 219, 0.2);
+}
+
+.btn:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 10px rgba(52, 152, 219, 0.3);
+}
+
+.btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(52, 152, 219, 0.2);
+}
+
+#board-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+/* Board setup */
+#board {
+    background-color: var(--board-bg);
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15), inset 0 0 10px rgba(0,0,0,0.05);
+    display: grid;
+    /* Columns and rows will be set by JS */
+    gap: 0;
+    width: 100%;
+    max-width: 500px;
+    aspect-ratio: 1 / 1;
+}
+
+/* Grid Cells */
+.cell {
+    position: relative;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Cross lines using pseudo-elements */
+.cell::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1.5px;
+    background-color: var(--board-line);
+    z-index: 1;
+    pointer-events: none;
+}
+
+.cell::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 1.5px;
+    background-color: var(--board-line);
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* Fix edges */
+.cell.top::after { top: 50%; }
+.cell.bottom::after { bottom: 50%; }
+.cell.left::before { left: 50%; }
+.cell.right::before { right: 50%; }
+
+/* Hover effect on empty cell */
+.cell:hover::before, .cell:hover::after {
+    background-color: #c0392b; /* Highlight line red when hovering */
+}
+
+/* Hover indicator (ghost piece) */
+.cell:not(:has(.piece)):hover::after {
+    content: '';
+    position: absolute;
+    width: 30%;
+    height: 30%;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 3;
+}
+
+/* Pieces */
+.piece {
+    width: 85%;
+    height: 85%;
+    border-radius: 50%;
+    position: relative;
+    z-index: 5;
+    box-shadow: 2px 3px 5px rgba(0,0,0,0.4);
+    animation: dropIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.piece.black {
+    background: radial-gradient(circle at 30% 30%, #555, var(--black-piece));
+}
+
+.piece.white {
+    background: radial-gradient(circle at 30% 30%, #fff, #ddd);
+}
+
+@keyframes dropIn {
+    from {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+footer {
+    margin-top: 15px;
+    font-size: 0.85rem;
+    color: #aaa;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .container {
+        padding: 20px 15px;
+    }
+    .status-panel {
+        flex-direction: column;
+        gap: 15px;
+    }
+    #board {
+        padding: 8px;
+    }
+    header h1 {
+        font-size: 1.8rem;
+    }
+}
